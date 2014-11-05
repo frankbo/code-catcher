@@ -17,12 +17,12 @@ casper.then(function(){
     this.waitForSelector('#postalCode',function(){
 
         //setting value for postalcode and return all Elements that might be the Search button
-        var elements = casper.evaluate(function(postalCodeInformation){
+        casper.evaluate(function(user){
             document.querySelector('#postalCode').value = user.postalCode;
             //Click button to save the code
             var $searchBtn = $('span:contains("Suchen")').parent();
             $searchBtn.click();
-        }, postalCodeInformation);
+        }, user);
 
     });
 });
@@ -87,11 +87,12 @@ casper.then(function(){
 
     casper.waitForText('Gutscheincode:',function(){
         debugScreenShot(debugable,'FinalScreenshot of the Code');
-        var $codeElement = casper.evaluate(function(){
-            return $('p:contains("Gutscheincode")').children().first();
+        var code = casper.evaluate(function(){
+            var $codeElement = $('p:contains("Gutscheincode")').children().first();
+            return $codeElement.text();
         });
 
-        this.echo($codeElement.value());
+        this.echo(code);
 
     })
 });
