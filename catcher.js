@@ -1,5 +1,5 @@
-//var page = require('webpage').create();
 var casper = require('casper').create();
+//TODO write answer in file on hd;
 var system = require('system');
 var url = 'http://www.o2online.de/more/kategorie/mehr-erlebnisse/o2-kinotag-plus-eins-tickets-kaufen';
 var debugable = true;
@@ -65,8 +65,8 @@ casper.then(function(){
     });
 });
 
-var acceptButton = 'Teilnehmen';
 //Step 5 Accept Button reservation
+var acceptButton = 'Teilnehmen';
 casper.then(function(){
     this.echo('Step 5 Accept Button reservation');
     debugScreenShot(debugable,'Step5');
@@ -87,7 +87,11 @@ casper.then(function(){
 
     casper.waitForText('Gutscheincode:',function(){
         debugScreenShot(debugable,'FinalScreenshot of the Code');
+        var $codeElement = casper.evaluate(function(){
+            return $('p:contains("Gutscheincode")').children().first();
+        });
 
+        this.echo($codeElement.value());
 
     })
 });
@@ -99,20 +103,13 @@ casper.then(function(){
 
 casper.run();
 
-
+//Debugging screen in gloabl variable debug is true
 var debugScreenShot = function(debug, text){
-
-    if(typeof debug !== 'boolean'){
-        console.log('typof of debug is not boolean');
-        return -1;
-    }
 
     if(debug){
         console.log('Rendering ' + text + '.png')
         window.setTimeout(casper.capture(text + '.png'),1000);
-        return 1;
     }
 
-    return 1;
 };
 
