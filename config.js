@@ -1,7 +1,7 @@
 var config = {
     phoneNumber: '',
     password: '',
-    zip: '',
+    postalCode: '',
     cinemaName: ''
 };
 module.exports = config;
