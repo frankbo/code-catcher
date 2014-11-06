@@ -1,7 +1,6 @@
 ## o2 code catcher
 
-### The o2 code catcher is a casper.js script which opens the o2 homepage, enters user information and prints a
-### cinema code
+### The o2 code catcher is a casper.js script which opens the o2 homepage, enters user information and prints a cinema code
 
 #### Steps:
 1. Install casper.js with npm install -g casperjs
