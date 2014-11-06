@@ -2,8 +2,11 @@ var casper = require('casper').create();
 //TODO write answer in file on hd;
 var system = require('system');
 var url = 'http://www.o2online.de/more/kategorie/mehr-erlebnisse/o2-kinotag-plus-eins-tickets-kaufen';
-var debugable = true;
+var isDebuggable = true;
 var user = require('config.js');
+
+//default time to wait in waitFamily functions. Waits maximum 20 seconds;
+casper.options.waitTimeout = 20000;
 
 //starting
 casper.start(url);
@@ -12,7 +15,7 @@ casper.start(url);
 //Step 1 Enter Postalcode for your Area and click search button
 casper.then(function(){
     this.echo('Step 1 Enter PostalCode');
-    debugScreenShot(debugable,'Step1');
+    debugScreenShot(isDebuggable,'Step1');
 
     this.waitForSelector('#postalCode',function(){
 
@@ -30,7 +33,7 @@ casper.then(function(){
 //Step 2 and 3 Finding the correct Radiobutton for the searched Cinema and click ok button on bottom of page
 casper.then(function(){
     this.echo('Step 2 and 3 Find the Radiobutton with correct cinema');
-    debugScreenShot(debugable,'Step23');
+    debugScreenShot(isDebuggable,'Step23');
 
     casper.waitForText(user.cinemaName,function(){
         //check the radiobutton
@@ -53,7 +56,7 @@ casper.then(function(){
 //Step 4 Search for login formular, enter login information and hit login
 casper.then(function(){
     this.echo('Step 4 fill login formular and hit login button');
-    debugScreenShot(debugable,'Step4');
+    debugScreenShot(isDebuggable,'Step4');
 
     //TODO Check each each element exist (casper.exist) and wait or evaluate afterwards
     casper.waitForSelector('#loginButton',function(){
@@ -66,50 +69,53 @@ casper.then(function(){
 });
 
 //Step 5 Accept Button reservation
-var acceptButton = 'Teilnehmen';
+//var acceptButton = 'Teilnehmen';
 casper.then(function(){
     this.echo('Step 5 Accept Button reservation');
-    debugScreenShot(debugable,'Step5');
+    debugScreenShot(isDebuggable,'Step5');
 
-    casper.waitForText(acceptButton, function(){
-        casper.evaluate(function(acceptButton) {
+    casper.waitForText('Teilnehmen', function(){
+        casper.evaluate(function() {
             //Click button to save the code
-            var $savaCodeBtn = $('span:contains("' + acceptButton + '")').parent();
-            $savaCodeBtn.click();
-        }, acceptButton);
+            var $saveCodeBtn = $('span:contains("Teilnehmen")').parent();
+            $saveCodeBtn.click();
+        });
     });
 });
 
 //Step 6 Find Code and save it to file
 casper.then(function(){
     this.echo('Step 6 Find the Code on page');
-    debugScreenShot(debugable,'Step6');
-
+    debugScreenShot(isDebuggable,'Step6');
     casper.waitForText('Gutscheincode:',function(){
-        debugScreenShot(debugable,'FinalScreenshot of the Code');
+        this.echo('Found String Gutscheincode:');
+        //debugScreenShot(isDebuggable,'FinalScreenshot of the Code');
         var code = casper.evaluate(function(){
             var $codeElement = $('p:contains("Gutscheincode")').children().first();
             return $codeElement.text();
         });
-
         this.echo(code);
-
-    })
+    });
 });
 
 //Do this afterwards
 casper.then(function(){
+    debugScreenShot(isDebuggable,'Finish');
+
     this.echo('Script should be done');
 });
 
 casper.run();
 
-//Debugging screen in gloabl variable debug is true
+//Debugging screen if gloabl variable debug is true
 var debugScreenShot = function(debug, text){
 
     if(debug){
-        console.log('Rendering ' + text + '.png')
-        window.setTimeout(casper.capture(text + '.png'),1000);
+        //wait 10 seconds and then do the screenshot.
+        //The page needs time to render the html elements
+        casper.wait(10000,function(){
+            casper.capture('screenshots/' + text + '.png')
+        });
     }
 
 };
