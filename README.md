@@ -13,4 +13,3 @@
 
 - Cinema must be in the range of 50km around the entered postalcode
 - When the script can t find the element in waitTimeout time the script stops.
-- Writing code in a file or send the code per mail.
