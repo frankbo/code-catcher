@@ -4,7 +4,7 @@
 
 ##### Steps:
 1. Install casper.js with npm install -g casperjs
-2. Edit the config.js file and add your information
+2. Edit the defaultConfig.js file, add your information and rename it to config.js
 3. Run script with casperjs catcher.js
 
 ##### If debuggable is true the script creates a screenshot for every step in the screenshot/ folder
