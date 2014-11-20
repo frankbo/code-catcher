@@ -1,6 +1,5 @@
 var casper = require('casper').create();
-//TODO write answer in file on hd;
-var system = require('system');
+var fs = require('fs');
 var url = 'http://www.o2online.de/more/kategorie/mehr-erlebnisse/o2-kinotag-plus-eins-tickets-kaufen';
 var isDebuggable = true;
 var user = require('config.js');
@@ -15,6 +14,7 @@ casper.start(url);
 //Step 1 Enter Postalcode for your Area and click search button
 casper.then(function(){
     this.echo('Step 1 Enter PostalCode');
+
     debugScreenShot(isDebuggable,'Step1');
 
     this.waitForSelector('#postalCode',function(){
@@ -29,6 +29,7 @@ casper.then(function(){
 
     });
 });
+
 
 //Step 2 and 3 Finding the correct Radiobutton for the searched Cinema and click ok button on bottom of page
 casper.then(function(){
@@ -91,10 +92,14 @@ casper.then(function(){
         this.echo('Found String Gutscheincode:');
         //debugScreenShot(isDebuggable,'FinalScreenshot of the Code');
         var code = casper.evaluate(function(){
-            var $codeElement = $('p:contains("Gutscheincode")').children().first();
+            var $codeElement = $('p:contains("Gutscheincode:")').children().first();
             return $codeElement.text();
         });
-        this.echo(code);
+
+        //if length of node is not 0
+        if(~!code.length){
+            writeInFile(code);
+        }
     });
 });
 
@@ -104,6 +109,7 @@ casper.then(function(){
 
     this.echo('Script should be done');
 });
+
 
 casper.run();
 
@@ -118,5 +124,15 @@ var debugScreenShot = function(debug, text){
         });
     }
 
+};
+
+//adding the new code to the current list of codes
+var writeInFile = function(code){
+    var currentTime = new Date();
+    var month = currentTime.getMonth() + 1;
+    var day = currentTime.getDate();
+    var year = currentTime.getFullYear();
+
+    fs.write('codeListLog.txt','' + year + '-' + month + '-' + day + '  Code: ' + code +'\n' , 'w+');
 };
 
