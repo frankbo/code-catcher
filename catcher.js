@@ -97,7 +97,7 @@ casper.then(function(){
         });
 
         //if length of node is not 0
-        if(~!code.length){
+        if(!code.length){
             writeInFile(code);
         }
     });
